@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>questudio — Animated Films &amp; Video Reels</title>
+  <meta name="description" content="questudio is an animation studio making short films, product films, music videos and vertical reels.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&family=Reenie+Beanie&family=Nunito:wght@400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <filter id="wob-edge"><feTurbulence type="fractalNoise" baseFrequency="0.025" numOctaves="2" seed="9"/><feDisplacementMap in="SourceGraphic" scale="5"/></filter>
+  </svg>
+
+  <!-- ============ LOADER (atck-style block reveal) ============ -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <span class="loader-word">questudio</span>
+  </div>
+
+  <!-- ============ HEADER — grid-cell navigation ============ -->
+  <header class="hdr" id="hdr">
+    <div class="hdr-row">
+      <a href="#top" class="gb hdr-logo" aria-label="questudio, home"><span class="logo-word">questudio</span></a>
+      <div class="gb hdr-title"><span class="blink" data-blink>Animation &amp; video studio</span></div>
+      <nav class="hdr-nav" id="hdr-nav" aria-label="Main">
+        <span class="gb hdr-empty" aria-hidden="true"></span>
+        <a href="#films" class="gb link"><span class="blink" data-blink>Films</span></a>
+        <a href="#make" class="gb link"><span class="blink" data-blink>Craft</span></a>
+        <a href="#contact" class="gb link"><span class="blink" data-blink>Contact</span></a>
+      </nav>
+      <button class="gb hdr-toggle" id="hdr-toggle" aria-expanded="false" aria-controls="hdr-nav">
+        <span class="t-open">Menu</span><span class="t-close">Close</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ============ HERO — grid slider ============ -->
+    <section class="hero" id="reel" aria-label="Showreel">
+      <div class="hero-media" id="hero-media" aria-hidden="true"></div>
+      <div class="hero-grid" id="hero-grid">
+        <div class="gb hc"><span class="hc-label mono">Showreel — 2026</span></div>
+        <div class="gb hc"></div>
+        <div class="gb hc"></div>
+        <div class="gb hc hc-r"><span class="hc-label mono tc" id="timecode">00:00:00:00</span></div>
+
+        <div class="gb hc hc-title"><h1 class="hero-title" id="hero-title" aria-live="polite">When the Book Ends</h1></div>
+
+        <div class="gb hc"></div>
+        <div class="gb hc hc-sub">
+          <div class="hero-sub">
+            <p class="hero-kind" id="hero-kind">Animated short</p>
+            <p class="hero-tech mono" id="hero-tech">Thermal grade · Character animation</p>
+          </div>
+        </div>
+        <div class="gb hc"></div>
+        <div class="gb hc"></div>
+
+        <div class="gb hc"><span class="hc-label hc-bl mono" id="hero-meta">9:16 · 0:54</span></div>
+        <div class="gb hc"></div>
+        <div class="gb hc"></div>
+        <button class="gb hc hc-next" id="hero-next" aria-label="Next film" data-cursor-hidden>
+          <span class="next-in"><span class="next-word">Next</span><sup class="next-count mono"><b id="reel-i">1</b>/<span id="reel-n">6</span></sup></span>
+        </button>
+      </div>
+      <div class="cursor mono" id="cursor" aria-hidden="true"><span>Play</span> <svg viewBox="0 0 8 10" width="7" height="9"><path d="M0 0l8 5-8 5z" fill="currentColor"/></svg></div>
+    </section>
+
+    <!-- Roles marquee -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track mono">
+        <span>Animated shorts</span><i></i><span>Product films</span><i></i><span>Explainers</span><i></i><span>Music videos</span><i></i><span>Vertical reels</span><i></i><span>Brand loops</span><i></i>
+        <span>Animated shorts</span><i></i><span>Product films</span><i></i><span>Explainers</span><i></i><span>Music videos</span><i></i><span>Vertical reels</span><i></i><span>Brand loops</span><i></i>
+      </div>
+    </div>
+
+    <!-- ============ INTRO — horizontal tumbling words (truus-style) ============ -->
+    <section class="hw" id="intro" aria-label="About questudio">
+      <div class="hw-sticky">
+        <div class="hw-track" id="hw-track">
+          <h2 class="hw-h2" id="hw-h2" data-text="we make pictures that |move| people">we make pictures that move people</h2>
+          <svg class="hw-arrow" viewBox="0 0 520 170" fill="none" aria-hidden="true">
+            <path pathLength="1" d="M6 160 C 20 70, 120 40, 190 70 C 250 95, 260 160, 215 165 C 170 170, 160 110, 205 70 C 270 15, 420 10, 500 150"/>
+            <path pathLength="1" d="M470 138 L 502 154 L 512 120"/>
+          </svg>
+          <span class="hw-sticker st-cam up" data-at="3" aria-hidden="true">
+            <svg viewBox="-14 -14 148 148"><defs><g id="d-cam"><path d="M24 56h52a6 6 0 0 1 6 6v26a6 6 0 0 1-6 6H24a6 6 0 0 1-6-6V62a6 6 0 0 1 6-6z"/><path d="M82 66l22-10v40l-22-10z"/><circle cx="38" cy="38" r="16"/><circle cx="68" cy="34" r="14"/><circle cx="38" cy="38" r="4"/><circle cx="68" cy="34" r="3.5"/><path d="M38 22v6M38 48v6M22 38h6M48 38h6M68 20v6M68 42v6M54 34h6M76 34h6"/><circle cx="32" cy="70" r="3"/><path d="M44 80h22"/><path d="M104 14l3 8 8 3-8 3-3 8-3-8-8-3 8-3z"/></g></defs>
+              <use href="#d-cam" class="die" filter="url(#wob-edge)"/><use href="#d-cam" class="pad" filter="url(#wob-edge)"/><use href="#d-cam" class="ink" filter="url(#wob)"/></svg>
+          </span>
+          <span class="hw-sticker st-clap down" data-at="11" aria-hidden="true">
+            <svg viewBox="-14 -14 148 148"><defs><g id="d-clap"><path d="M22 62h76v40H22z"/><path d="M22 60l-4-18 74-16 4 18z"/><path d="M34 57l-2-14M52 53l-3-14M70 49l-3-14M86 46l-3-13"/><path d="M22 72h76M34 62l-6 10M52 62l-6 10M70 62l-6 10M88 62l-6 10"/><path d="M34 86h28M34 94h40"/><path d="M104 14l8-6M108 26l10-2M100 6l2-8"/></g></defs>
+              <use href="#d-clap" class="die" filter="url(#wob-edge)"/><use href="#d-clap" class="pad" filter="url(#wob-edge)"/><use href="#d-clap" class="ink" filter="url(#wob)"/></svg>
+          </span>
+          <span class="hw-sticker st-eye up" data-at="19" aria-hidden="true">
+            <svg viewBox="-14 -14 148 148"><defs><g id="d-eye"><path d="M8 60Q60 12 112 60Q60 108 8 60z"/><circle cx="60" cy="60" r="21"/><path d="M54 49l17 11-17 11z" fill="currentColor"/><path d="M28 40l-6-9M44 31l-3-10M60 28V17M76 31l3-10M92 40l6-9"/><path d="M102 88l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></g></defs>
+              <use href="#d-eye" class="die" filter="url(#wob-edge)"/><use href="#d-eye" class="pad" filter="url(#wob-edge)"/><use href="#d-eye" class="ink" filter="url(#wob)"/></svg>
+          </span>
+          <span class="hw-sticker st-pen down" data-at="26" aria-hidden="true">
+            <svg viewBox="-14 -14 148 148"><defs><g id="d-pen"><path d="M84 12l22 22-48 48-22-22z"/><path d="M36 60l22 22-30 10z"/><path d="M30 86l-3 9 9-3z" fill="currentColor"/><path d="M76 20l22 22"/><path d="M22 108c14-10 22 8 36 0s22-6 32 4"/><path d="M24 14l4 9 10 1-7 7 2 10-9-5-9 5 2-10-7-7 10-1z"/></g></defs>
+              <use href="#d-pen" class="die" filter="url(#wob-edge)"/><use href="#d-pen" class="pad" filter="url(#wob-edge)"/><use href="#d-pen" class="ink" filter="url(#wob)"/></svg>
+          </span>
+        </div>
+        <p class="hw-text">Audiences scroll past almost everything. We make the frames they <em>stop</em> for — animated shorts, product films, explainers and reels for brands that want to be seen.</p>
+      </div>
+    </section>
+
+    <!-- ============ WORK — scroll-driven video rail ============ -->
+    <section class="work" id="films">
+      <div class="head-row">
+        <p class="mono kicker">01 — Selected films</p>
+        <p class="mono muted"><span id="stat-count">06</span> films · <span id="stat-runtime">—</span> of animation</p>
+      </div>
+      <div class="rail-wrap" id="rail-wrap">
+        <div class="rail-sticky">
+          <div class="rail" id="rail"></div>
+          <div class="rail-foot">
+            <span class="mono"><b id="rail-i">01</b> / <span id="rail-n">07</span></span>
+            <span class="rail-progress"><span id="rail-bar"></span></span>
+            <span class="mono muted hide-sm">Scroll to browse · click to watch</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CRAFT — video-led services ============ -->
+    <section class="make" id="make">
+      <div class="make-head">
+        <p class="mono kicker">02 — Craft</p>
+        <h2 class="shout dark">What we<br>do best.</h2>
+        <p class="make-note">Hover a service to see it in motion.</p>
+      </div>
+
+      <ol class="svc-list" id="svc-list">
+        <li class="svc-row" data-film="book">
+          <span class="svc-n mono">01</span>
+          <span class="svc-name">Animated shorts</span>
+          <span class="svc-desc">A world, a character and a look of its own — from first sketch to final grade.</span>
+          <span class="svc-eg mono">e.g. When the Book Ends ↗</span>
+        </li>
+        <li class="svc-row" data-film="kora">
+          <span class="svc-n mono">02</span>
+          <span class="svc-name">Product films</span>
+          <span class="svc-desc">Exploded views, materials and launches that show how a thing is made.</span>
+          <span class="svc-eg mono">e.g. Kora &amp; Kari ↗</span>
+        </li>
+        <li class="svc-row" data-film="mafia">
+          <span class="svc-n mono">03</span>
+          <span class="svc-name">Explainers</span>
+          <span class="svc-desc">Rules, flows and apps made obvious in under three minutes.</span>
+          <span class="svc-eg mono">e.g. Mafia Night ↗</span>
+        </li>
+        <li class="svc-row" data-film="letgo">
+          <span class="svc-n mono">04</span>
+          <span class="svc-name">Music videos</span>
+          <span class="svc-desc">Drawn, lettered and cut to the beat of the track.</span>
+          <span class="svc-eg mono">e.g. The Art of Letting Go ↗</span>
+        </li>
+        <li class="svc-row" data-film="pond">
+          <span class="svc-n mono">05</span>
+          <span class="svc-name">Paper &amp; mixed media</span>
+          <span class="svc-desc">Paper cut, collage and live action composited into animation.</span>
+          <span class="svc-eg mono">e.g. Pond Memory ↗</span>
+        </li>
+      </ol>
+
+      <div class="band">
+        <div class="band-cell band-nums">
+          <p class="card-label mono">In numbers</p>
+          <dl class="nums">
+            <div><dt id="num-films">06</dt><dd class="mono">Films</dd></div>
+            <div><dt id="num-mins">8</dt><dd class="mono">Minutes</dd></div>
+            <div><dt>4</dt><dd class="mono">Formats</dd></div>
+            <div><dt>∞</dt><dd class="mono">Frames</dd></div>
+          </dl>
+        </div>
+        <div class="band-cell band-formats">
+          <p class="card-label mono">Every format, from the first sketch</p>
+          <div class="fmt-row" id="fmt-row">
+            <figure class="fmt" style="--ar: 9 / 16"><video muted loop playsinline preload="none" data-src="media/kora-loop.mp4" poster="media/kora.jpg"></video><figcaption class="mono">9:16</figcaption></figure>
+            <figure class="fmt" style="--ar: 4 / 5"><video muted loop playsinline preload="none" data-src="media/pond-loop.mp4" poster="media/pond.jpg"></video><figcaption class="mono">4:5</figcaption></figure>
+            <figure class="fmt" style="--ar: 1 / 1"><video muted loop playsinline preload="none" data-src="media/doorways-loop.mp4" poster="media/doorways.jpg"></video><figcaption class="mono">1:1</figcaption></figure>
+            <figure class="fmt" style="--ar: 16 / 9"><video muted loop playsinline preload="none" data-src="media/book-loop.mp4" poster="media/book.jpg"></video><figcaption class="mono">16:9</figcaption></figure>
+          </div>
+        </div>
+        <div class="band-cell band-tech">
+          <p class="card-label mono">Techniques</p>
+          <div class="chips">
+            <span>Chalk line</span><span>Paper cut</span><span>3D exploded</span><span>Thermal grade</span><span>Character</span><span>UI motion</span><span>Kinetic type</span><span>Colour grade</span><span>Sound</span>
+          </div>
+        </div>
+        <a href="#contact" class="band-cell band-cta">
+          <p class="card-label mono">Available</p>
+          <span class="cta-big">Open for<br>commissions</span>
+          <span class="cta-arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============ CONTACT — retro monitor ============ -->
+    <section class="contact" id="contact">
+      <div class="head-row">
+        <p class="mono kicker">03 — Contact us</p>
+        <p class="mono muted hide-sm">Reply within 48h</p>
+      </div>
+      <div class="crt">
+        <div class="crt-screen">
+          <div class="crt-bar"><span>C:\QUESTUDIO\CONTACT</span><span id="crt-clock">00:00</span></div>
+          <div class="crt-body">
+            <p class="crt-line">&gt; have something that should move?</p>
+            <h2 class="crt-title">Let's make it<br>move<span class="caret">_</span></h2>
+            <p class="crt-line dim">A launch, a track, a campaign, a story. Send it over —<br>we'll tell you how we'd animate it.</p>
+            <div class="crt-icons" id="contact-links"></div>
+          </div>
+          <div class="crt-foot"><span>Open an icon to get in touch</span><span>READY.</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p class="foot-word" aria-hidden="true">questudio</p>
+    <div class="foot-row mono">
+      <span>© <span id="year">2026</span> <span data-studio-name>questudio</span></span>
+      <span class="hide-sm">Made frame by frame</span>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <!-- ============ PLAYER (atck-style) ============ -->
+  <dialog class="pl" id="player" aria-label="Film player">
+    <div class="pl-top">
+      <span class="gb pl-cell pl-studio">questudio</span>
+      <span class="gb pl-cell pl-t"><span id="pl-title"></span></span>
+      <span class="gb pl-cell hide-sm"><span id="pl-kind"></span></span>
+      <span class="gb pl-fill"></span>
+      <button class="gb pl-cell link" id="player-close">Close</button>
+    </div>
+    <div class="pl-stage" id="pl-stage">
+      <video id="player-video" playsinline preload="metadata"></video>
+      <span class="pl-state mono" id="pl-state">Pause</span>
+    </div>
+    <div class="pl-bot">
+      <div class="gb pl-progress" id="pl-progress" role="slider" aria-label="Seek" tabindex="0"><span id="pl-bar"></span></div>
+      <span class="gb pl-cell pl-time" id="pl-time">00:00</span>
+      <button class="gb pl-cell link" id="pl-grade" hidden>Grade · Final</button>
+      <button class="gb pl-cell link" id="pl-sound">Sound on</button>
+      <button class="gb pl-cell link hide-sm" id="pl-fs">Fullscreen</button>
+    </div>
+  </dialog>
+
+  <script src="main.js"></script>
+</body>
+</html>
