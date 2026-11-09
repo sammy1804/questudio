@@ -35,6 +35,35 @@ const WORKS = [
     tone: "#3b3fd8",
   },
   {
+    id: "landed",
+    title: "Landed",
+    year: 2026,
+    aspect: "16:9",
+    duration: 40,
+    kind: "Product launch film",
+    technique: ["Kinetic type", "UI motion"],
+    blurb: "A launch film for Landed, an AI job-search agent. Too many tabs, endless listings — then one calm search bar that does the hunting for you. Type, UI and a friendly mascot cut to a quick, clean rhythm.",
+    loopAspect: "9:16",
+    video: "media/landed.mp4",
+    loop: "media/landed-loop.mp4",
+    poster: "media/landed.jpg",
+    tone: "#e8543a",
+  },
+  {
+    id: "kora",
+    title: "Kora & Kari: Raw to Rare",
+    year: 2026,
+    aspect: "9:16",
+    duration: 20,
+    kind: "Product film",
+    technique: ["Flat illustration", "Kinetic type"],
+    blurb: "A collection film for a furniture studio. Each piece gets its own colour card and a one-line promise, then the whole range snaps into a grid — raw to rare.",
+    video: "media/kora-raw.mp4",
+    loop: "media/kora-raw-loop.mp4",
+    poster: "media/kora-raw.jpg",
+    tone: "#7a2238",
+  },
+  {
     id: "rain",
     title: "How Rain Is Made",
     year: 2026,
@@ -47,6 +76,21 @@ const WORKS = [
     loop: "media/knowledge-rain-loop.mp4",
     poster: "media/knowledge-rain.jpg",
     tone: "#3f86bd",
+  },
+  {
+    id: "queen",
+    title: "Queen of Hearts",
+    year: 2026,
+    aspect: "4:3",
+    duration: 11,
+    kind: "Illustrated loop",
+    technique: ["Illustration", "Draw-on"],
+    blurb: "A Queen of Hearts appears on an aged playing card — the pen line first, then colour, curling smoke and a pile of keepsakes at her feet.",
+    loopAspect: "9:16",
+    video: "media/queen.mp4",
+    loop: "media/queen-loop.mp4",
+    poster: "media/queen.jpg",
+    tone: "#2f6b5a",
   },
   {
     id: "pond",
@@ -70,6 +114,7 @@ const WORKS = [
     duration: 179,
     kind: "Explainer — Unsorted",
     technique: ["Character animation", "UI motion"],
+    loopAspect: "9:16",
     blurb: "A how-to-play film for a live party game by Unsorted. A candlelit cast of characters, phones that deal secret roles, and a QR-to-screen flow explained in three minutes.",
     video: "media/mafia.mp4",
     loop: "media/mafia-loop.mp4",
@@ -105,7 +150,7 @@ const WORKS = [
     kind: "Music video",
     technique: ["Chalk line", "Hand lettering"],
     blurb: "A music video drawn in chalk on painted grounds — a clock, a paper boat, a jar of kept flowers, a staircase to a door, a kite let loose. Every line draws itself in, scene by scene.",
-    loopAspect: "4:5",
+    loopAspect: "9:16",
     video: "media/letgo.mp4",
     loop: "media/letgo-loop.mp4",
     poster: "media/letgo.jpg",
@@ -161,11 +206,97 @@ function splitChars(el, text) {
 }
 document.querySelectorAll("[data-blink]").forEach((el) => splitChars(el, el.textContent.trim()));
 
+/* ---------- Sound: subtle UI effects (Web Audio, no files) ---------- */
+const sfx = (() => {
+  const KEY = "questudio-sound";
+  let on = true;
+  try { on = localStorage.getItem(KEY) !== "off"; } catch (e) {}
+  let ctx = null, master = null, noise = null, unlocked = false, last = {};
+  const init = () => {
+    if (ctx) return;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    ctx = new AC();
+    master = ctx.createGain(); master.gain.value = 0.55;
+    const comp = ctx.createDynamicsCompressor();
+    master.connect(comp).connect(ctx.destination);
+    const len = ctx.sampleRate * 0.6;
+    noise = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = noise.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+  };
+  const unlock = () => { unlocked = true; init(); ctx && ctx.state === "suspended" && ctx.resume(); };
+  ["pointerdown", "keydown", "touchstart"].forEach((ev) => addEventListener(ev, unlock, { once: true, passive: true }));
+  const ready = (name, gap = 70) => {
+    if (!on || !unlocked || !ctx) return false;
+    const t = performance.now();
+    if (last[name] && t - last[name] < gap) return false;
+    last[name] = t; return true;
+  };
+  const env = (g, t, a, peak, d) => {
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + a);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
+  };
+  const tone = (type, f0, f1, peak, dur, delay = 0) => {
+    const t = ctx.currentTime + delay, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(f0, t);
+    if (f1) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    env(g, t, 0.004, peak, dur);
+    o.connect(g).connect(master); o.start(t); o.stop(t + dur + 0.05);
+  };
+  const hiss = (fA, fB, q, peak, dur) => {
+    const t = ctx.currentTime, src = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = noise; bp.type = "bandpass"; bp.Q.value = q;
+    bp.frequency.setValueAtTime(fA, t); bp.frequency.exponentialRampToValueAtTime(fB, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(peak, t + dur * 0.35);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(bp).connect(g).connect(master); src.start(t); src.stop(t + dur + 0.05);
+  };
+  const api = {
+    get on() { return on; },
+    toggle() {
+      on = !on;
+      try { localStorage.setItem(KEY, on ? "on" : "off"); } catch (e) {}
+      if (on) { unlock(); api.chime(); }
+      document.documentElement.classList.toggle("sound-off", !on);
+      return on;
+    },
+    tick() { if (ready("tick", 60)) { tone("sine", 2300, 1700, 0.035, 0.035); } },
+    reel() { if (ready("reel", 90)) { hiss(3200, 2600, 6, 0.05, 0.05); tone("triangle", 1400, 1200, 0.02, 0.03); } },
+    whoosh() { if (ready("whoosh", 250)) { hiss(500, 2600, 1.2, 0.16, 0.38); } },
+    pop() { if (ready("pop", 120)) { tone("sine", 420, 980, 0.09, 0.09); tone("sine", 1400, 2200, 0.025, 0.05, 0.03); } },
+    chime() { if (ready("chime", 300)) { tone("triangle", 660, 0, 0.06, 0.6); tone("triangle", 990, 0, 0.045, 0.7, 0.07); } },
+    close() { if (ready("close", 300)) { tone("triangle", 880, 590, 0.05, 0.25); } },
+    blip() { if (ready("blip", 80)) { tone("square", 880, 0, 0.018, 0.04); } },
+  };
+  document.documentElement.classList.toggle("sound-off", !on);
+  return api;
+})();
+
+/* Hover / tap sounds on interactive things */
+(() => {
+  const hoverSel = ".link, .hc-next, .svc-row, .shot-media, .fmt, .band-cta, .hdr-logo, .hdr-toggle, .pl-cell.link";
+  addEventListener("pointerover", (e) => {
+    if (e.pointerType !== "mouse") return;
+    const el = e.target.closest(hoverSel + ", .crt-icon");
+    if (!el || el.contains(e.relatedTarget)) return;
+    el.classList.contains("crt-icon") ? sfx.blip() : sfx.tick();
+  });
+  addEventListener("click", (e) => { if (e.target.closest(".crt-icon")) sfx.blip(); });
+})();
+
 /* ---------- Header: mobile menu ---------- */
 (() => {
   const hdr = $("#hdr"), btn = $("#hdr-toggle");
   const set = (open) => { hdr.classList.toggle("open", open); btn.setAttribute("aria-expanded", open); };
   btn.addEventListener("click", () => set(!hdr.classList.contains("open")));
+  document.querySelectorAll("[data-sound-toggle]").forEach((t) => {
+    const label = () => { t.querySelector(".snd-state").textContent = sfx.on ? "On" : "Off"; t.setAttribute("aria-pressed", sfx.on); };
+    label();
+    t.addEventListener("click", (e) => { e.preventDefault(); sfx.toggle(); document.querySelectorAll("[data-sound-toggle]").forEach((x) => { x.querySelector(".snd-state").textContent = sfx.on ? "On" : "Off"; x.setAttribute("aria-pressed", sfx.on); }); });
+  });
   $("#hdr-nav").addEventListener("click", (e) => { if (e.target.closest("a")) set(false); });
   addEventListener("keydown", (e) => { if (e.key === "Escape") set(false); });
 })();
@@ -268,12 +399,12 @@ const reel = (() => {
   activate(0);
   restart();
 
-  $("#hero-next").addEventListener("click", (e) => { e.stopPropagation(); go(i + 1); });
+  $("#hero-next").addEventListener("click", (e) => { e.stopPropagation(); sfx.whoosh(); go(i + 1); });
   grid.addEventListener("click", (e) => { if (grid._swiped) return; if (!e.target.closest(".hc-next")) openPlayer(WORKS[i]); });
   addEventListener("keydown", (e) => {
     if (dlg.open || e.target.closest("input, textarea")) return;
-    if (e.key === "ArrowRight" && scrollY < innerHeight) go(i + 1);
-    if (e.key === "ArrowLeft" && scrollY < innerHeight) go(i - 1);
+    if (e.key === "ArrowRight" && scrollY < innerHeight) { sfx.whoosh(); go(i + 1); }
+    if (e.key === "ArrowLeft" && scrollY < innerHeight) { sfx.whoosh(); go(i - 1); }
   });
 
   // Swipe left/right on the hero (touch)
@@ -286,7 +417,7 @@ const reel = (() => {
     }, { passive: true });
     grid.addEventListener("touchend", (e) => {
       const dx = e.changedTouches[0].clientX - sx;
-      if (moved && Math.abs(dx) > 50) { go(dx < 0 ? i + 1 : i - 1); grid._swiped = true; setTimeout(() => (grid._swiped = false), 400); }
+      if (moved && Math.abs(dx) > 50) { sfx.whoosh(); go(dx < 0 ? i + 1 : i - 1); grid._swiped = true; setTimeout(() => (grid._swiped = false), 400); }
     });
   })();
 
@@ -374,7 +505,7 @@ new IntersectionObserver(([e]) => (e.isIntersecting && !$("#player").open ? reel
       const k1 = 1 - t;
       l.style.transform = `translate3d(0,${(l._amp * k1 * k1).toFixed(1)}px,0) rotate(${(l._rot * k1).toFixed(1)}deg)`;
     });
-    stickers.forEach((s) => s.classList.toggle("on", x + s._x < W * 0.72));
+    stickers.forEach((s) => { const want = x + s._x < W * 0.72; if (want && !s.classList.contains("on")) sfx.pop(); s.classList.toggle("on", want); });
     const d = Math.min(1, Math.max(0, (p - 0.08) * 2.4));
     arrow[0].style.strokeDashoffset = 1 - d;
     arrow[1].style.strokeDashoffset = d >= 1 ? 0 : 1;
@@ -477,6 +608,8 @@ new IntersectionObserver(([e]) => (e.isIntersecting && !$("#player").open ? reel
       }
       el.style.setProperty("--dim", (ad * 0.75).toFixed(3));
     });
+    if (update._best !== undefined && update._best !== best) sfx.reel();
+    update._best = best;
     $("#rail-i").textContent = pad(best + 1);
     shots.forEach((el, n) => el.classList.toggle("active", n === best));
   };
@@ -521,6 +654,7 @@ const dlg = $("#player");
 const pv = $("#player-video");
 let grades = null, gradeIdx = 0;
 function openPlayer(w) {
+  sfx.chime();
   reel.pause();
   dlg.style.setProperty("--tone", w.tone);
   $("#pl-title").textContent = w.title;
@@ -575,6 +709,7 @@ $("#pl-grade").addEventListener("click", (e) => {
   e.currentTarget.lastChild.textContent = `Grade · ${grades[gradeIdx].label}`;
 });
 dlg.addEventListener("close", () => {
+  sfx.close();
   pv.pause(); pv.removeAttribute("src"); pv.load();
   document.body.classList.remove("locked");
   if ($("#reel").getBoundingClientRect().bottom > 0) reel.resume();
